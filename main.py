@@ -1,7 +1,7 @@
 # for the different states and algorithm to implement see README.md
 import os
 import telebot
-from user import User, State
+from user import User, St
 
 st1='\nבתשאול זה מופעלות ההנחיות מה-30/12'
 
@@ -23,7 +23,7 @@ def greet(message):
 def help(message):
   # we will use this as start over.
   user = get_user(message.chat.id)
-  user.state = State.UNKNOWN
+  user.state = St.UNKNOWN
   bot.send_message(message.chat.id, "מה קורה. הפקודות האפשרויות הן ככה וככה")  # כאן מקובל להציג את מערכת הפקודות הנתמכת במערכת
 
 @bot.message_handler(regexp='נחשפתי')  # this will be accepted without "/" and at any capitalization
@@ -40,11 +40,11 @@ def hello(msg):
 @bot.message_handler(regexp='כן')
 def hello(msg):
   user = get_user(msg.chat.id)
-  if user.state == State.NAMED: #we just expecting his exposed or not answer
-    user.state = State.S1_EXPOSED
+  if user.state == St.NAMED: #we just expecting his exposed or not answer
+    user.state = St.S1_EXPOSED
     bot.send_message(msg.chat.id, "האם הנך מחוסן (תו ירוק בתוקף)?")  # this merely sends a message
-  elif user.state == State.S1_EXPOSED: #we are expecting his immuned or not answer
-    user.state = State.S3_IMMUNE
+  elif user.state == St.S1_EXPOSED: #we are expecting his immuned or not answer
+    user.state = St.S3_IMMUNE
     bot.send_message(msg.chat.id, "נפלא\nגש מיד לבדיקת אנטיגן מוסדית\nהאם האנטיגן המוסדי חיובי?")  # this merely sends a message
 
   else:
@@ -53,11 +53,11 @@ def hello(msg):
 @bot.message_handler(regexp='לא')
 def hello(msg):
   user = get_user(msg.chat.id)
-  if user.state == State.NAMED: #the NO response here is an answer to "exposed or not"
-    user.state == State.S0_NOT_EXPOSED
+  if user.state == St.NAMED: #the NO response here is an answer to "exposed or not"
+    user.state == St.S0_NOT_EXPOSED
     bot.send_message(msg.chat.id, "המשך יום נעים")  # this merely sends a message
-  elif user.state == State.S1_EXPOSED: #we are expecting his immuned or not answer
-    user.state = State.S2_NOT_IMMUNE
+  elif user.state == St.S1_EXPOSED: #we are expecting his immuned or not answer
+    user.state = St.S2_NOT_IMMUNE
     bot.send_message(msg.chat.id, "אוי ואבוי,\nגש מיד לבדיקת PCR\nהאם ה-PCR חיובי?")  # this merely sends a message
   else:
     bot.send_message(msg.chat.id, f'עדיין לא מקודד. 20\n{user.state}')
@@ -68,13 +68,13 @@ def command_default(msg):
     # it has to be used when user sends his name.
     # this type of default handler can mask other handlers. It must be located at the end.
     user = get_user(msg.chat.id)
-    if user.state == State.UNKNOWN: #it's a brand new user
-      user.state = State.ANONYMOUS
+    if user.state == St.UNKNOWN: #it's a brand new user
+      user.state = St.ANONYMOUS
       bot.send_message(msg.chat.id, "לא הבנתי. כתוב את שמך או\n להתחלה מחדש שלח  \n/help")
-    elif user.state == State.ANONYMOUS: #already known:
+    elif user.state == St.ANONYMOUS: #already known:
       user.name = msg.text # take message as a name
       print(user.name, user.chat_id)
-      user.state = State.NAMED
+      user.state = St.NAMED
       bot.send_message(msg.chat.id, f'הי {user.name},\n האם נחשפת?\nמשלב זה עליך לענות רק כן או לא!{st1}')
     else:
       #not sure why we are here. (Unhanled situation was reached)
