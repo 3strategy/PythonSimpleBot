@@ -3,6 +3,8 @@ import os
 import telebot
 from user import User, State
 
+st1='\nבתשאול זה מופעלות ההנחיות מה-30/12'
+
 API_KEY = os.getenv('API7_KEY')
 bot = telebot.TeleBot(API_KEY)
 users = []
@@ -39,11 +41,12 @@ def hello(msg):
 def hello(msg):
   user = get_user(msg.chat.id)
   if user.state == State.NAMED: #we just expecting his exposed or not answer
-    user.state = State.ESPOSED
+    user.state = State.S1_EXPOSED
     bot.send_message(msg.chat.id, "האם הנך מחוסן (תו ירוק בתוקף)?")  # this merely sends a message
-  elif user.state == State.ESPOSED: #we are expecting his immuned or not answer
-    user.state = State.IMMUNE
+  elif user.state == State.S1_EXPOSED: #we are expecting his immuned or not answer
+    user.state = State.S3_IMMUNE
     bot.send_message(msg.chat.id, "נפלא\nגש מיד לבדיקת אנטיגן מוסדית\nהאם האנטיגן המוסדי חיובי?")  # this merely sends a message
+
   else:
     bot.send_message(msg.chat.id, f'עדיין לא מקודד. 18\n{user.state}')
 
@@ -51,10 +54,10 @@ def hello(msg):
 def hello(msg):
   user = get_user(msg.chat.id)
   if user.state == State.NAMED: #the NO response here is an answer to "exposed or not"
-    user.state == State.NOT_ESPOSED
+    user.state == State.S0_NOT_EXPOSED
     bot.send_message(msg.chat.id, "המשך יום נעים")  # this merely sends a message
-  elif user.state == State.ESPOSED: #we are expecting his immuned or not answer
-    user.state = State.NOT_IMMUNE
+  elif user.state == State.S1_EXPOSED: #we are expecting his immuned or not answer
+    user.state = State.S2_NOT_IMMUNE
     bot.send_message(msg.chat.id, "אוי ואבוי,\nגש מיד לבדיקת PCR\nהאם ה-PCR חיובי?")  # this merely sends a message
   else:
     bot.send_message(msg.chat.id, f'עדיין לא מקודד. 20\n{user.state}')
@@ -66,12 +69,13 @@ def command_default(msg):
     # this type of default handler can mask other handlers. It must be located at the end.
     user = get_user(msg.chat.id)
     if user.state == State.UNKNOWN: #it's a brand new user
-      user.state = State.NAMELESS
+      user.state = State.ANONYMOUS
       bot.send_message(msg.chat.id, "לא הבנתי. כתוב את שמך או\n להתחלה מחדש שלח  \n/help")
-    elif user.state == State.NAMELESS: #already known:
+    elif user.state == State.ANONYMOUS: #already known:
       user.name = msg.text # take message as a name
+      print(user.name, user.chat_id)
       user.state = State.NAMED
-      bot.send_message(msg.chat.id, f'הי {user.name},\n האם נחשפת?\nמשלב זה עליך לענות רק כן או לא!')
+      bot.send_message(msg.chat.id, f'הי {user.name},\n האם נחשפת?\nמשלב זה עליך לענות רק כן או לא!{st1}')
     else:
       #not sure why we are here. (Unhanled situation was reached)
       bot.send_message(msg.chat.id, f'הי, המצב כרגע לא ברור 17.\n נסה שוב מאוחר יותר\n {user.state}\nלהתחלה מחדש שלח\n/help')
