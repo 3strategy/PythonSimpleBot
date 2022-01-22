@@ -14,7 +14,23 @@ class State(Enum):
   S7_NEG_PCR_IM = 7
   S8_NEG_PCR_NI = 8
   S9_POS_PCR_NI = 9
-
+  S11 = 11
+  S12 = 12
+  S13 = 13
+  S14 = 14
+  S15 = 15
+  S16 = 16
+  S17 = 17
+  S18 = 18
+  S19 = 19
+  S20 = 20
+  S21 = 21
+  S22 = 22
+  S23 = 23
+  S24 = 24
+  S25 = 25
+  S26 = 26
+  S27 = 27
 
 class User():
   def __init__(self, chat_id):

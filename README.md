@@ -11,3 +11,4 @@ An alternative for windows is to set API_KEY as a system variable, and restart y
 
 The code is intended to manage the following states:
 ![img.png](img.png)
+![img_1.png](img_1.png)
